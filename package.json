@@ -3,8 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "scrape": "tsx src/scraper/index.ts",
-    "scrape:dry": "DRY_RUN=1 tsx src/scraper/index.ts",
+    "scrape": "tsx --env-file-if-exists=.env src/scraper/index.ts",
+    "scrape:dry": "DRY_RUN=1 tsx --env-file-if-exists=.env src/scraper/index.ts",
+    "test:db": "tsx --env-file=.env scripts/test-db.ts",
+    "test:email": "tsx --env-file=.env scripts/test-email.ts",
+    "test:send": "tsx --env-file=.env scripts/send-test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

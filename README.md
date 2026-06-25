@@ -39,7 +39,7 @@ Generalisation of [job_bot](../job_bot): no hardcoded keywords, no hardcoded cha
 3. Settings → API → copy `URL` and `service_role` key.
 
 ### 2. Resend
-1. Create an account at https://resend.com (free tier: 3k emails/month).
+1. Create an account at `https://resend.com` (free tier: 3k emails/month).
 2. Add and verify a domain (or use the onboarding sandbox for testing).
 3. Copy the API key.
 
