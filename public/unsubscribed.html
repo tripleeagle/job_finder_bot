@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Unsubscribed — jobsignal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,500..800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0F0E0C;
+      --bone: #F4F0E8;
+      --bone-line: #D9D2C0;
+      --muted: #76726B;
+      --signal: #FF6B1F;
+      --display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --body: 'Inter', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bone);
+      color: var(--ink);
+      font-family: var(--body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .stamp {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 24px;
+    }
+    h1 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(36px, 6vw, 52px);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      margin: 0;
+      max-width: 14ch;
+      text-align: center;
+    }
+    p {
+      color: var(--muted);
+      margin: 18px 0 0;
+      max-width: 38ch;
+      text-align: center;
+      font-size: 16px;
+    }
+    a.back {
+      margin-top: 36px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--bone-line);
+      padding-bottom: 2px;
+      transition: border-color 120ms ease;
+    }
+    a.back:hover { border-color: var(--signal); }
+  </style>
+</head>
+<body>
+  <p class="stamp">◊ signal off · no further emails</p>
+  <h1>You're off the wire.</h1>
+  <p>We won't email you again. If this was a mistake, you can subscribe again from the homepage.</p>
+  <a class="back" href="/">← back to jobsignal</a>
+</body>
+</html>

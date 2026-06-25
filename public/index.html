@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>jobsignal — quiet job alerts for Czech roles</title>
+  <meta name="description" content="Set your criteria once. We watch ten Czech job boards and email you when something matches." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,500..800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0F0E0C;
+      --ink-2: #1F1D1A;
+      --bone: #F4F0E8;
+      --bone-2: #EBE5D7;
+      --bone-line: #D9D2C0;
+      --muted: #76726B;
+      --signal: #FF6B1F;
+      --signal-soft: rgba(255, 107, 31, 0.12);
+      --display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --body: 'Inter', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bone);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 24px 72px;
+    }
+
+    /* ─── Header ───────────────────────────────────────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0 56px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+    .wordmark {
+      color: var(--ink);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .wordmark::before {
+      content: '◊';
+      color: var(--signal);
+      margin-right: 8px;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--signal);
+      box-shadow: 0 0 0 0 var(--signal-soft);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--signal-soft); opacity: 1; }
+      50%      { box-shadow: 0 0 0 7px transparent;       opacity: 0.55; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pulse { animation: none; }
+    }
+
+    /* ─── Hero ─────────────────────────────────────────────── */
+    .hero { padding: 8px 0 56px; }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 20px;
+    }
+    h1 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(40px, 7vw, 64px);
+      line-height: 0.98;
+      letter-spacing: -0.025em;
+      margin: 0;
+      color: var(--ink);
+    }
+    h1 .accent { color: var(--signal); }
+    .lede {
+      max-width: 46ch;
+      margin: 22px 0 0;
+      font-size: 17px;
+      color: var(--ink-2);
+    }
+
+    /* ─── Form card ────────────────────────────────────────── */
+    .panel {
+      background: #FBF8F1;
+      border: 1px solid var(--bone-line);
+      border-radius: 4px;
+      padding: 32px 28px;
+      margin: 0 0 32px;
+      position: relative;
+    }
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px dashed var(--bone-line);
+      margin-bottom: 24px;
+    }
+    .panel-title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.015em;
+      margin: 0;
+    }
+    .panel-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .field { margin: 0 0 22px; }
+    .field:last-of-type { margin-bottom: 0; }
+    label.field-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+    .field-hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 6px 0 0;
+    }
+
+    input[type=text], input[type=email] {
+      width: 100%;
+      padding: 11px 0;
+      border: 0;
+      border-bottom: 1.5px solid var(--bone-line);
+      background: transparent;
+      font-family: var(--body);
+      font-size: 16px;
+      color: var(--ink);
+      transition: border-color 120ms ease;
+    }
+    input[type=text]:focus, input[type=email]:focus {
+      outline: none;
+      border-bottom-color: var(--signal);
+    }
+    input::placeholder { color: #B2AC9C; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .chip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border: 1px solid var(--bone-line);
+      border-radius: 999px;
+      background: transparent;
+      font-family: var(--body);
+      font-size: 14px;
+      color: var(--ink-2);
+      cursor: pointer;
+      user-select: none;
+      transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+    .chip input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .chip:hover { border-color: #B7AE99; }
+    .chip:has(input:checked) {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--bone);
+    }
+    .chip:has(input:focus-visible) {
+      outline: 2px solid var(--signal);
+      outline-offset: 2px;
+    }
+
+    .cadence { display: flex; gap: 0; border: 1px solid var(--bone-line); border-radius: 4px; overflow: hidden; }
+    .cadence label {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      cursor: pointer;
+      background: transparent;
+      transition: background 120ms ease, color 120ms ease;
+      border-right: 1px solid var(--bone-line);
+    }
+    .cadence label:last-child { border-right: 0; }
+    .cadence input { position: absolute; opacity: 0; pointer-events: none; }
+    .cadence label:has(input:checked) {
+      background: var(--ink);
+      color: var(--bone);
+    }
+    .cadence label:has(input:focus-visible) {
+      outline: 2px solid var(--signal);
+      outline-offset: -2px;
+    }
+
+    button[type=submit] {
+      margin-top: 28px;
+      width: 100%;
+      padding: 14px 22px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--signal);
+      color: var(--ink);
+      border: 0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 80ms ease, background 120ms ease;
+    }
+    button[type=submit]:hover { background: #FF7A36; }
+    button[type=submit]:active { transform: translateY(1px); }
+    button[type=submit]:disabled { opacity: 0.5; cursor: default; transform: none; }
+    button[type=submit]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    .feedback { margin-top: 18px; font-size: 14px; min-height: 1em; }
+    .feedback.ok { color: #1A6B3E; }
+    .feedback.err { color: #B6371E; }
+
+    /* ─── Monitoring panel ─────────────────────────────────── */
+    .monitoring { margin: 56px 0 0; }
+    .mon-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 0 14px;
+    }
+    .mon-head h2 {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0;
+      font-weight: 500;
+    }
+    .mon-head .count {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--ink-2);
+    }
+    .sources {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--bone-line);
+    }
+    .sources li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink-2);
+      border-bottom: 1px solid var(--bone-line);
+    }
+    .sources li::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background: var(--signal);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ─── Footer ───────────────────────────────────────────── */
+    footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--bone-line);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 480px) {
+      .page { padding: 20px 18px 56px; }
+      .panel { padding: 24px 20px; }
+      .panel-head { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .sources { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <span class="wordmark">jobsignal</span>
+      <span class="status"><span class="pulse" aria-hidden="true"></span> scanning · every 30m</span>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">CZ job alerts · no account</p>
+      <h1>Stop checking.<br /><span class="accent">Start receiving.</span></h1>
+      <p class="lede">
+        Set your criteria once. We watch ten Czech job boards and email you when something matches — instant, daily digest, or weekly. No account, no app, no scrolling.
+      </p>
+    </section>
+
+    <form id="f" class="panel" novalidate>
+      <div class="panel-head">
+        <h2 class="panel-title">Set your signal</h2>
+        <span class="panel-tag">~60 seconds</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="email">Email</label>
+        <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@email.cz" />
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="keywords">Keywords</label>
+        <input id="keywords" name="keywords" type="text" required placeholder="content creator, social media, SMM" />
+        <p class="field-hint">Comma-separated. A job matches if any of these appears in the listing.</p>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="locations">Locations</label>
+        <input id="locations" name="locations" type="text" placeholder="Praha, Brno, remote" />
+        <p class="field-hint">Leave empty to allow any location.</p>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Employment</span>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="employment" value="full-time" checked /> Full-time / HPP</label>
+          <label class="chip"><input type="checkbox" name="employment" value="part-time" /> Part-time</label>
+          <label class="chip"><input type="checkbox" name="employment" value="contract" /> Contract</label>
+          <label class="chip"><input type="checkbox" name="employment" value="internship" /> Internship</label>
+          <label class="chip"><input type="checkbox" name="employment" value="dpp" /> DPP / DPČ</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Seniority</span>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="seniority" value="junior" checked /> Junior</label>
+          <label class="chip"><input type="checkbox" name="seniority" value="medior" checked /> Medior</label>
+          <label class="chip"><input type="checkbox" name="seniority" value="senior" /> Senior</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Frequency</span>
+        <div class="cadence">
+          <label><input type="radio" name="cadence" value="instant" checked /> Instant</label>
+          <label><input type="radio" name="cadence" value="daily" /> Daily</label>
+          <label><input type="radio" name="cadence" value="weekly" /> Weekly</label>
+        </div>
+      </div>
+
+      <button type="submit" id="submit">Start receiving</button>
+      <p class="feedback" id="msg" role="status" aria-live="polite"></p>
+    </form>
+
+    <section class="monitoring">
+      <div class="mon-head">
+        <h2>Currently monitoring</h2>
+        <span class="count">10 sources</span>
+      </div>
+      <ul class="sources">
+        <li>jobs.cz</li>
+        <li>startupjobs.cz</li>
+        <li>prace.cz</li>
+        <li>cocuma.cz</li>
+        <li>nofluffjobs.com</li>
+        <li>profesia.cz</li>
+        <li>indeed.cz</li>
+        <li>dobrá práce</li>
+        <li>greenhouse boards</li>
+        <li>lever boards</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>built in Prague</span>
+      <a href="https://github.com" rel="noopener">source</a>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('f');
+    const msg = document.getElementById('msg');
+    const submit = document.getElementById('submit');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.className = 'feedback';
+      msg.textContent = '';
+      submit.disabled = true;
+
+      const data = new FormData(form);
+      const payload = {
+        email: data.get('email'),
+        keywords: String(data.get('keywords') || '').split(',').map(s => s.trim()).filter(Boolean),
+        locations: String(data.get('locations') || '').split(',').map(s => s.trim()).filter(Boolean),
+        employment: data.getAll('employment'),
+        seniority: data.getAll('seniority'),
+        cadence: data.get('cadence'),
+      };
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Something went wrong' }));
+          throw new Error(err.error || 'Could not subscribe');
+        }
+        msg.className = 'feedback ok';
+        msg.textContent = 'Check your inbox — we sent a one-click confirmation.';
+        form.reset();
+      } catch (err) {
+        msg.className = 'feedback err';
+        msg.textContent = err.message;
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
